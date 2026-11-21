@@ -29,13 +29,17 @@ DURATION = {
     "nhl": dt.timedelta(hours=2, minutes=45),
     "ahl": dt.timedelta(hours=2, minutes=45),
     "lhjmq": dt.timedelta(hours=2, minutes=45),
+    "ohl": dt.timedelta(hours=2, minutes=45),
+    "whl": dt.timedelta(hours=2, minutes=45),
     "nba": dt.timedelta(hours=2, minutes=30),
     "nfl": dt.timedelta(hours=3, minutes=30),
     "mlb": dt.timedelta(hours=3, minutes=15),
 }
-LEAGUE_LABEL = {"nhl": "NHL", "ahl": "AHL", "lhjmq": "LHJMQ", "nba": "NBA", "nfl": "NFL", "mlb": "MLB"}
+LEAGUE_LABEL = {"nhl": "NHL", "ahl": "AHL", "lhjmq": "LHJMQ", "ohl": "OHL", "whl": "WHL", "nba": "NBA", "nfl": "NFL", "mlb": "MLB"}
 HOCKEYTECH = {  # public widget keys used by the leagues' own websites
     "lhjmq": ("lhjmq", "f1aa699db3d81487"),
+    "ohl": ("ohl", "f1aa699db3d81487"),
+    "whl": ("whl", "f1aa699db3d81487"),
     "ahl": ("ahl", "50c2cd9b5e18e390"),
 }
 ESPN = {"nba": "basketball/nba", "nfl": "football/nfl", "mlb": "baseball/mlb"}
