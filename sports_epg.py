@@ -174,6 +174,48 @@ def collect_hockeytech(league, teams, games):
         })
 
 
+def _plain(s):
+    import unicodedata
+    s = unicodedata.normalize("NFD", s or "")
+    return "".join(ch for ch in s if ch.isalnum()).lower()
+
+
+def dedupe_cross_league(teams, games):
+    """Inter-league exhibition games (e.g. QMJHL vs OHL) make a team appear in two
+    leagues. Keep each team only in the league where it plays the most games."""
+    junior = set(HOCKEYTECH)
+    count = {}
+    for g in games:
+        for tid in (g["home"], g["away"]):
+            count[tid] = count.get(tid, 0) + 1
+    by_name = {}
+    for tid, t in teams.items():
+        if t["league"] in junior:
+            by_name.setdefault(_plain(t["name"].replace(" - OHL", "").replace(" - WHL", "").replace(" - QMJHL", "")), []).append(tid)
+    remap = {}
+    for ids in by_name.values():
+        if len(ids) < 2:
+            continue
+        keep = max(ids, key=lambda i: (count.get(i, 0), i in CACHED_IDS))
+        for i in ids:
+            if i != keep:
+                remap[i] = keep
+    for tid in list(teams):  # also drop names tagged as another league's guest
+        if " - OHL" in teams[tid]["name"] or " - WHL" in teams[tid]["name"] or " - QMJHL" in teams[tid]["name"]:
+            remap.setdefault(tid, None)
+    for old, new in remap.items():
+        teams.pop(old, None)
+        for g in games:
+            for side in ("home", "away"):
+                if g[side] == old and new:
+                    g[side] = new
+    if remap:
+        log("cross-league duplicates removed:", sorted(remap))
+
+
+CACHED_IDS = set()
+
+
 # ---------------------------------------------------------------- xmltv
 def ts(t):
     return t.astimezone(UTC).strftime("%Y%m%d%H%M%S +0000")
@@ -259,11 +301,13 @@ def main():
         with open(CACHE_FILE, encoding="utf-8") as f:
             for t in json.load(f):
                 teams[t["id"]] = t
+                CACHED_IDS.add(t["id"])
     collect_nhl(teams, games)
     for lg in ESPN:
         collect_espn(lg, teams, games)
     for lg in HOCKEYTECH:
         collect_hockeytech(lg, teams, games)
+    dedupe_cross_league(teams, games)
     xml = build(teams, games)
     with open(os.path.join(out_dir, "sports.xml"), "w", encoding="utf-8") as f:
         f.write(xml)

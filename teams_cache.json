@@ -1232,13 +1232,6 @@
     "short": "Bulldogs"
   },
   {
-    "id": "ohl.blb",
-    "league": "ohl",
-    "abbr": "BLB",
-    "name": "Blainville-Boisbriand Armada",
-    "short": "Armada"
-  },
-  {
     "id": "ohl.bram",
     "league": "ohl",
     "abbr": "BRAM",
@@ -1258,13 +1251,6 @@
     "abbr": "FLNT",
     "name": "Flint Firebirds",
     "short": "Firebirds"
-  },
-  {
-    "id": "ohl.gat",
-    "league": "ohl",
-    "abbr": "GAT",
-    "name": "Gatineau Olympiques",
-    "short": "Olympiques"
   },
   {
     "id": "ohl.gue",
